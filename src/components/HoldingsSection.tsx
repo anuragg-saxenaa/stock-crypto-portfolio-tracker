@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Plus, TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import { Holding } from '../types';
 import { HoldingItem } from './HoldingItem';
 import { AddHoldingModal } from './AddHoldingModal';
-import { PortfolioService } from '../services/portfolioService';
+/* PortfolioService import removed (unused) */
 
 interface HoldingsSectionProps {
   title: string;
@@ -29,7 +29,6 @@ export const HoldingsSection: React.FC<HoldingsSectionProps> = ({
   totalPnLPercentage
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const portfolioService = PortfolioService.getInstance();
 
   const formatCurrency = (value: number): string => {
     return new Intl.NumberFormat('en-US', {

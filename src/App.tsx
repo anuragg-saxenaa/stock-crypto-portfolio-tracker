@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { PortfolioSummary } from './components/PortfolioSummary';
 import { HoldingsSection } from './components/HoldingsSection';
 import { usePortfolio } from './hooks/usePortfolio';
@@ -9,7 +9,7 @@ import './index.css';
 
 function App() {
   const { portfolio, addHolding, updateHolding, removeHolding, updatePrices, clearPortfolio, exportPortfolio, importPortfolio } = usePortfolio();
-  const { isMobile, isTablet, isDesktop } = useResponsive();
+  const { isDesktop } = useResponsive();
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   // Get all symbols for price updates

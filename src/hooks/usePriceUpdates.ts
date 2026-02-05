@@ -16,7 +16,7 @@ export const usePriceUpdates = ({
   const [priceUpdates, setPriceUpdates] = useState<PriceUpdate[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const websocketRef = useRef<WebSocket | null>(null);
 
   const priceService = PriceService.getInstance();

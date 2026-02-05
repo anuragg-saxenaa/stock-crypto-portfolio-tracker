@@ -1,4 +1,4 @@
-import React from 'react';
+// React import not required with the new JSX transform
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import { Holding } from '../types';
 import { PortfolioService } from '../services/portfolioService';
@@ -9,7 +9,7 @@ interface HoldingItemProps {
   onRemove: (id: string) => void;
 }
 
-export const HoldingItem: React.FC<HoldingItemProps> = ({ holding, onUpdate, onRemove }) => {
+export const HoldingItem: React.FC<HoldingItemProps> = ({ holding, onUpdate: _onUpdate, onRemove }) => {
   const portfolioService = PortfolioService.getInstance();
   
   const currentValue = portfolioService.calculateHoldingValue(holding);

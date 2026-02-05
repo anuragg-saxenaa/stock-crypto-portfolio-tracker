@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { RefreshCw, Download, Upload, Trash2 } from 'lucide-react';
 import { Portfolio } from '../types';
-import { PortfolioService } from '../services/portfolioService';
 
 interface PortfolioSummaryProps {
   portfolio: Portfolio;
@@ -20,7 +19,6 @@ export const PortfolioSummary: React.FC<PortfolioSummaryProps> = ({
   onImportPortfolio,
   isRefreshing = false
 }) => {
-  const portfolioService = PortfolioService.getInstance();
 
   const formatCurrency = (value: number): string => {
     return new Intl.NumberFormat('en-US', {

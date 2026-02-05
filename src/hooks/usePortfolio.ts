@@ -1,7 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { Holding, Portfolio } from '../types';
 import { PortfolioService } from '../services/portfolioService';
-import { PriceService } from '../services/priceService';
 
 export const usePortfolio = () => {
   const [portfolio, setPortfolio] = useState<Portfolio>(() => {

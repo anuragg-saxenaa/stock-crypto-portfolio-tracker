@@ -1,17 +1,8 @@
-import { APIResponse, PriceUpdate, WebSocketMessage } from '../types';
+import { APIResponse } from '../types';
 
 export class PriceService {
   private static instance: PriceService;
-  private apiKeys = {
-    alphaVantage: 'demo', // Will use demo mode for this implementation
-    coinGecko: 'demo'
-  };
-  private baseUrls = {
-    alphaVantage: 'https://www.alphavantage.co/query',
-    coinGecko: 'https://api.coingecko.com/api/v3',
-    stooq: 'https://stooq.com/q/l',
-    binance: 'https://api.binance.com/api/v3'
-  };
+  // API keys / URLs would be configured here for a production implementation.
 
   static getInstance(): PriceService {
     if (!PriceService.instance) {
