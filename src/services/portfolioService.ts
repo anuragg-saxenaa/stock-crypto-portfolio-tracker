@@ -33,9 +33,17 @@ export class PortfolioService {
       }
 
       const parsed = JSON.parse(data);
+      const hydrateHoldings = (holdings: any[]): Holding[] => {
+        return (holdings || []).map((h: any) => ({
+          ...h,
+          // localStorage JSON round-trips Dates as strings; hydrate back to Date
+          lastUpdated: h?.lastUpdated ? new Date(h.lastUpdated) : new Date(),
+        })) as Holding[];
+      };
+
       const portfolio: Portfolio = {
-        stocks: parsed.stocks || [],
-        crypto: parsed.crypto || [],
+        stocks: hydrateHoldings(parsed.stocks),
+        crypto: hydrateHoldings(parsed.crypto),
         totalValue: 0,
         totalPnL: 0,
         totalPnLPercentage: 0,
