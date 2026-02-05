@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { PortfolioSummary } from './components/PortfolioSummary';
 import { HoldingsSection } from './components/HoldingsSection';
 import { usePortfolio } from './hooks/usePortfolio';
@@ -12,9 +12,11 @@ function App() {
   const { isDesktop } = useResponsive();
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  // Get all symbols for price updates
-  const allSymbols = [...portfolio.stocks, ...portfolio.crypto].map(h => h.symbol);
-  
+  // Get all symbols for price updates (memoized to avoid restarting polling on every render)
+  const allSymbols = useMemo(() => {
+    return [...portfolio.stocks, ...portfolio.crypto].map(h => h.symbol);
+  }, [portfolio.stocks, portfolio.crypto]);
+
   const { priceUpdates, isLoading, error, refreshPrices } = usePriceUpdates({
     symbols: allSymbols,
     updateInterval: 5000, // Update every 5 seconds

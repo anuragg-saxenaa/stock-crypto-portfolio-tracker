@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { PriceUpdate } from '../types';
 import { PriceService } from '../services/priceService';
 
@@ -20,15 +20,20 @@ export const usePriceUpdates = ({
   const websocketRef = useRef<WebSocket | null>(null);
 
   const priceService = PriceService.getInstance();
+  const symbolsKey = useMemo(() => symbols.map(s => s.toUpperCase()).sort().join('|'), [symbols]);
+  const normalizedSymbols = useMemo(() => {
+    const set = new Set(symbols.map(s => s.toUpperCase().trim()).filter(Boolean));
+    return Array.from(set);
+  }, [symbolsKey]);
 
   const fetchPrices = useCallback(async () => {
-    if (symbols.length === 0) return;
+    if (normalizedSymbols.length === 0) return;
 
     setIsLoading(true);
     setError(null);
 
     try {
-      const responses = await priceService.getMultiplePrices(symbols);
+      const responses = await priceService.getMultiplePrices(normalizedSymbols);
       const updates: PriceUpdate[] = responses.map(response => ({
         symbol: response.symbol,
         price: response.price,
@@ -43,7 +48,7 @@ export const usePriceUpdates = ({
     } finally {
       setIsLoading(false);
     }
-  }, [symbols, priceService]);
+  }, [normalizedSymbols, priceService]);
 
   const startPolling = useCallback(() => {
     if (intervalRef.current) {
@@ -62,13 +67,13 @@ export const usePriceUpdates = ({
   }, []);
 
   const connectWebSocket = useCallback(() => {
-    if (symbols.length === 0 || !useWebSocket) return;
+    if (normalizedSymbols.length === 0 || !useWebSocket) return;
 
     // For demo purposes, we'll use polling instead of real WebSocket
     // In production, this would establish actual WebSocket connections
     console.log('WebSocket connection simulated - using polling instead');
     startPolling();
-  }, [symbols, useWebSocket, startPolling]);
+  }, [normalizedSymbols, useWebSocket, startPolling]);
 
   const disconnectWebSocket = useCallback(() => {
     if (websocketRef.current) {
@@ -90,15 +95,7 @@ export const usePriceUpdates = ({
     };
   }, [useWebSocket, connectWebSocket, disconnectWebSocket, startPolling]);
 
-  useEffect(() => {
-    // Restart polling when symbols change
-    if (useWebSocket) {
-      connectWebSocket();
-    } else {
-      stopPolling();
-      startPolling();
-    }
-  }, [symbols, useWebSocket, connectWebSocket, stopPolling, startPolling]);
+  // Note: symbols changes are already handled via hook dependencies (normalizedSymbols)
 
   const getPriceForSymbol = useCallback((symbol: string): number | null => {
     const update = priceUpdates.find(update => update.symbol === symbol);
