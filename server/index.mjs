@@ -40,8 +40,48 @@ function parseCsvLine(line) {
   return out;
 }
 
+async function fetchYahooQuote(symbol) {
+  const url = new URL(`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol.toUpperCase())}`);
+  url.searchParams.set('interval', '5m');
+  url.searchParams.set('range', '1d');
+  url.searchParams.set('includePrePost', 'true');
+
+  const res = await fetch(url, { headers: { 'user-agent': 'openclaw-portfolio-tracker/1.0' } });
+  if (!res.ok) throw new Error(`yahoo http ${res.status}`);
+  const data = await res.json();
+
+  const result = data?.chart?.result?.[0];
+  const meta = result?.meta;
+  const timestamps = result?.timestamp ?? [];
+  const closes = result?.indicators?.quote?.[0]?.close ?? [];
+
+  // Find latest non-null close.
+  let lastClose = null;
+  let lastTs = null;
+  for (let i = closes.length - 1; i >= 0; i--) {
+    const v = closes[i];
+    if (typeof v === 'number' && Number.isFinite(v)) {
+      lastClose = v;
+      lastTs = timestamps[i] ?? null;
+      break;
+    }
+  }
+
+  const price = typeof lastClose === 'number' ? lastClose : meta?.regularMarketPrice;
+  const prev = meta?.previousClose;
+  const changePercent = typeof prev === 'number' && prev ? ((price - prev) / prev) * 100 : undefined;
+
+  return {
+    symbol: symbol.toUpperCase(),
+    price: Number.isFinite(price) ? Math.round(price * 100) / 100 : NaN,
+    changePercent: Number.isFinite(changePercent) ? Math.round(changePercent * 100) / 100 : undefined,
+    timestamp: lastTs ? new Date(lastTs * 1000).toISOString() : new Date().toISOString(),
+    source: 'yahoo'
+  };
+}
+
 async function fetchStooqQuote(symbol) {
-  // Stooq uses symbols like msft.us
+  // Fallback (often delayed). Stooq uses symbols like msft.us
   const stooqSymbol = `${symbol.toLowerCase()}.us`;
   const url = `https://stooq.com/q/l/?s=${encodeURIComponent(stooqSymbol)}&f=sd2t2ohlcv&h&e=csv`;
   const res = await fetch(url, { headers: { 'user-agent': 'openclaw-portfolio-tracker/1.0' } });
@@ -122,7 +162,13 @@ app.get('/api/prices', async (req, res) => {
 
     const [cryptoQuotes, stockQuotes] = await Promise.all([
       fetchCoinGeckoQuotes(cryptoSyms),
-      Promise.all(stockSyms.map(s => fetchStooqQuote(s)))
+      Promise.all(stockSyms.map(async s => {
+        try {
+          return await fetchYahooQuote(s);
+        } catch {
+          return await fetchStooqQuote(s);
+        }
+      }))
     ]);
 
     const quotes = [...cryptoQuotes, ...stockQuotes].filter(q => Number.isFinite(q.price));
