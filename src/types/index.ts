@@ -21,6 +21,7 @@ export interface Portfolio {
 export interface PriceUpdate {
   symbol: string;
   price: number;
+  changePercent?: number;
   timestamp: Date;
   source: 'api' | 'websocket' | 'poll';
 }
