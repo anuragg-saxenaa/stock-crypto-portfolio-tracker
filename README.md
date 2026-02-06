@@ -41,19 +41,55 @@ src/
 npm install
 ```
 
-### Run dev server
+### Run (dev)
+
+Frontend dev server:
 
 ```bash
 npm run dev
 ```
 
-Then open the local URL shown by Vite.
+Live prices API (server):
+
+```bash
+npm run dev:api
+```
+
+Run both together (recommended):
+
+```bash
+npm run dev:full
+```
+
+Then open: http://127.0.0.1:3000/
 
 ### Build
 
 ```bash
 npm run build
 ```
+
+### Docker (deploy anywhere)
+
+Build + run:
+
+```bash
+docker build -t portfolio-tracker .
+docker run -p 4173:4173 portfolio-tracker
+```
+
+Or docker-compose:
+
+```bash
+docker compose up --build
+```
+
+Then open: http://localhost:4173/
+
+### Hosting options
+
+- Static hosting (no server API): Vercel / Netlify / Cloudflare Pages (fastest), but you lose the server-side price proxy.
+- Docker hosting (recommended for live prices): Fly.io, Render, Railway, DigitalOcean App Platform.
 
 ### Lint (if configured)
 
