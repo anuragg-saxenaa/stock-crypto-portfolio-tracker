@@ -8,10 +8,17 @@ This repo is based on the project requirements in [`rules.md`](./rules.md) and t
 
 - Track holdings (symbol, quantity, average buy price)
 - Separate sections for **Stocks** and **Crypto**
-- Live/periodic price updates (service layer)
+- Live/periodic price updates via local API (`/api/prices`)
 - Real-time **unrealized P&L** and **% change**
 - Mobile-first responsive UI
 - Local persistence via **localStorage**
+
+## Live Price Sources
+
+- **Stocks:** Yahoo Finance chart data (fallback to Stooq if rate-limited)
+- **Crypto:** CoinGecko
+
+> Note: “real-time” is best-effort on free sources; timestamps are included in the API response.
 
 ## Tech Stack
 
