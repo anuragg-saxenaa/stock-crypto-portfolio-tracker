@@ -37,6 +37,7 @@ export const usePriceUpdates = ({
       const updates: PriceUpdate[] = responses.map(response => ({
         symbol: response.symbol,
         price: response.price,
+        changePercent: response.changePercent,
         timestamp: new Date(),
         source: 'api'
       }));
