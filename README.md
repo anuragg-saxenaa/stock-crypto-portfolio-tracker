@@ -15,25 +15,29 @@ This repo is based on the project requirements in [`rules.md`](./rules.md) and t
 
 ## Live Price Sources
 
-- **Stocks:** Yahoo Finance chart data (fallback to Stooq if rate-limited)
-- **Crypto:** CoinGecko
+| Type      | Source                     | Notes                                               |
+|-----------|----------------------------|-----------------------------------------------------|
+| **Stocks** | Yahoo Finance              | Falls back to Stooq if rate-limited                 |
+| **Crypto** | CoinGecko                  | Free public API                                     |
 
-> Note: “real-time” is best-effort on free sources; timestamps are included in the API response.
+> **Note:** "Real-time" is best-effort on free sources; timestamps are included in the API response.
 
 ## Tech Stack
 
-- React 18 + TypeScript
-- Vite
-- Tailwind CSS
+| Technology | Version/Type |
+|------------|--------------|
+| **Frontend Framework** | React 18 + TypeScript |
+| **Build Tool** | Vite |
+| **Styling** | Tailwind CSS |
 
 ## Project Structure
 
-```text
+```
 src/
-  components/         UI components
-  hooks/              React hooks for portfolio + prices + responsiveness
-  services/           API/localStorage services
-  types/              TypeScript types
+├── components/    # UI components
+├── hooks/         # React hooks for portfolio + prices + responsiveness
+├── services/      # API/localStorage services
+└── types/         # TypeScript types
 ```
 
 ## Getting Started
